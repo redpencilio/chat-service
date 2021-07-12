@@ -40,11 +40,10 @@ app.post('/messages/', async function(req, res) {
     })
 
     let uuidValue = uuid();
-    let value = sparqlEscape(JSON.stringify({
-        refresh: true
-    }), 'string')
+    let value = sparqlEscape(JSON.stringify({}), 'string')
     let dateISOString = now.toISOString()
-    let type = "http://chat"
+    let type = "http://refresh"
+    let realm = "http://chat"
     let q = `
     PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
     PREFIX mu: <http://mu.semte.ch/vocabularies/core/>
@@ -56,6 +55,7 @@ app.post('/messages/', async function(req, res) {
             <http://semte.baert.jp.net/push-updates/v0.1/${uuidValue}>  a mupush:PushUpdate;
                                                                         mu:uuid ${sparqlEscape(uuidValue, 'string')};
                                                                         mupush:tabId ${sparqlEscape(toId, 'string')};
+                                                                        mupush:realm <${realm}>;
                                                                         mupush:type <${type}>;
                                                                         rdf:value ${value};
                                                                         dc:created ${sparqlEscape(dateISOString, 'string')}^^xsd:dateTime.
