@@ -51,13 +51,15 @@ app.post('/messages/', async function(req, res) {
     PREFIX mupush: <http://mu.semte.ch/vocabularies/push/>
     PREFIX dc:  <http://purl.org/dc/terms/>
     PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
-    INSERT INTO <http://mu.semte.ch/application> {
-        <http://semte.baert.jp.net/push-updates/v0.1/${uuidValue}>  mu:uuid ${sparqlEscape(uuidValue, 'string')};
-                                                                    a mupush:PushUpdate;
-                                                                    mupush:tabId ${sparqlEscape(toId, 'string')};
-                                                                    mupush:type <${type}>;
-                                                                    rdf:value ${value};
-                                                                    dc:created ${sparqlEscape(dateISOString, 'string')}^^xsd:dateTime.
+    INSERT DATA {
+        GRAPH<http://mu.semte.ch/application> {
+            <http://semte.baert.jp.net/push-updates/v0.1/${uuidValue}>  a mupush:PushUpdate;
+                                                                        mu:uuid ${sparqlEscape(uuidValue, 'string')};
+                                                                        mupush:tabId ${sparqlEscape(toId, 'string')};
+                                                                        mupush:type <${type}>;
+                                                                        rdf:value ${value};
+                                                                        dc:created ${sparqlEscape(dateISOString, 'string')}^^xsd:dateTime.
+        }
     }
     `
     query(q)
