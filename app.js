@@ -5,8 +5,10 @@ import {
     sparqlEscape
 } from "mu";
 
+// Map to store the messages for a certain id
 let messages = {}
 
+// Get the messages for a certain tab, empty list if there are no messages for the tab
 app.get('/messages/', async function(req, res) {
     let id = req.get("MU-TAB-ID");
     res.send({
@@ -14,9 +16,12 @@ app.get('/messages/', async function(req, res) {
     })
 })
 
+// Add a message for a certain tab
 app.post('/messages/', async function(req, res) {
+    // Get the sender id
     let id = req.get("MU-TAB-ID");
     let data = req.body.data;
+    // Get the receiver id
     let toId = data.attributes.to;
     let now = new Date();
     data.id = uuid()
@@ -30,15 +35,17 @@ app.post('/messages/', async function(req, res) {
         month: 'long',
         day: 'numeric'
     })
+    // Add the message
     if (!messages[toId]) {
         messages[toId] = []
     }
     messages[toId].push(data);
-    let test = []
+    // Send the message back to the creator
     res.send({
         data: data
     })
 
+    // Create a push update for the receiving tab that they have a new message and should refresh their messages
     let uuidValue = uuid();
     let value = sparqlEscape(JSON.stringify({}), 'string')
     let dateISOString = now.toISOString()
